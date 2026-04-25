@@ -19,7 +19,8 @@ Collect recent news from multiple sources and generate a structured digest based
    - `collection.web_search`: `true`
    - `output`: `[terminal]`
    - `file_output.directory`: `~/news-digests`
-   - `file_output.filename_format`: `{date}.md`
+   - `file_output.filename_format`: `{date}`
+   - `file_output.file_format`: `md`
    - `item_format.show_importance`: `true`
    - `item_format.show_source`: `true`
    - `item_format.show_link`: `true`
@@ -117,8 +118,11 @@ For each topic:
 
 ## Step 4 — Format Output
 
-1. Read the template from `templates/digest.md`.
-2. Build the digest following the template structure:
+Determine the output file format from `file_output.file_format` (`md` or `html`). Read the corresponding template: `templates/digest.md` or `templates/digest.html`.
+
+### If format is `md` (Markdown):
+
+1. Build the digest following the `templates/digest.md` structure:
    - Replace `{digest_title}` with config value
    - Replace `{date}` with today's date (YYYY-MM-DD)
    - Replace `{timestamp}` with current time in format `HH:MM UTC` (e.g. `14:30 UTC`). Use `date -u +%H:%M` to get UTC time.
@@ -148,14 +152,29 @@ _{source_name}_
 5. Write the entire digest in the language specified by `language` config.
 6. Do NOT use `###` headers for individual news items — keep them as inline bold text. This makes the digest much more scannable.
 
+### If format is `html` (HTML):
+
+1. Read the template from `templates/digest.html`. The template contains the full CSS styling (dark theme, editorial design) and HTML structure.
+2. The template has HTML comments with instructions on how to generate topic sections and news items.
+3. Replace header placeholders:
+   - `{digest_title}` with config value
+   - `{date_human}` with human-readable date (e.g. `April 25, 2026`)
+   - `{timestamp}` with current time in `HH:MM UTC` format
+   - `{topic_count}` with number of topics
+   - `{total_items}` with total number of news items across all topics
+4. For each topic, generate a `<section class="topic">` block following the template instructions.
+5. For each news item, generate an `<article class="item {level}">` block where `{level}` is `high`, `medium`, or `low`.
+6. Choose an appropriate emoji for each topic's icon (e.g. 🤖 for AI, 💰 for Crypto, ⚙️ for Dev).
+7. Write the entire digest in the language specified by `language` config.
+
 ## Step 5 — Deliver
 
 Based on `output` config:
 
 - **`terminal`** — Print the full formatted digest directly to the console.
-- **`file`** — Create the output directory if it doesn't exist. Write the digest as a markdown file:
+- **`file`** — Create the output directory if it doesn't exist. Write the digest as a file:
   - Directory: `file_output.directory` (expand `~` to home directory)
-  - Filename: `file_output.filename_format` with `{date}` replaced by today's date (YYYY-MM-DD)
-  - If a file with that name already exists, do NOT overwrite it. Instead, append a counter: `{date}-2.md`, `{date}-3.md`, etc. Check what files already exist before writing.
+  - Filename: `file_output.filename_format` with `{date}` replaced by today's date (YYYY-MM-DD), plus the extension based on `file_format` (`.md` or `.html`)
+  - If a file with that name already exists, do NOT overwrite it. Instead, append a counter: `{date}-2.html`, `{date}-3.html`, etc. Check what files already exist before writing.
 
 Report what was done: how many topics processed, how many total items, where the file was saved (if applicable).

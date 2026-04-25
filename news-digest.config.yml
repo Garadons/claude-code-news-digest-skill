@@ -1,67 +1,72 @@
 # === GENERAL SETTINGS ===
 
 # Report language. Examples: uk, en, de, pl
-# null — agent will detect language based on topics
 language: en
 
 # Digest title. null — defaults to "News Digest"
-digest_title: "Daily Digest"
+digest_title: 'Daily Digest'
 
 # Max number of news items per topic (default)
 # Each topic can override this value
 # null — no limit, show everything found
-max_items_per_topic: 5
+max_items_per_topic: 10
 
 # === DATA COLLECTION ===
 
 # Which collection methods to use
 # true — enabled, false — disabled
 collection:
-  # Parse RSS feeds from websites (auto-discovers RSS URLs)
-  rss: true
-  # Visit websites directly and read their main page
-  websites: true
-  # Search for additional news via web search
-  web_search: true
+    # Parse RSS feeds from websites (auto-discovers RSS URLs)
+    rss: true
+    # Visit websites directly and read their main page
+    websites: true
+    # Search for additional news via web search
+    web_search: true
 
 # === OUTPUT ===
 
 # Where to output the digest. Available: terminal, file
 # terminal — print to console
-# file — save as markdown file
+# file — save as file (format depends on file_format)
 # Can specify one or both. null — terminal only
 output:
-  - terminal
-  - file
+    - terminal
+    - file
 
 # File output settings
 # Ignored if file is not listed in output
 # null — use default values
 file_output:
-  # Save directory. null — ~/news-digests
-  directory: "~/news-digests"
-  # Filename format. {date} is replaced with date (2026-04-25)
-  # null — {date}.md
-  filename_format: "{date}.md"
+    # Save directory. null — ~/news-digests
+    directory: '~/news-digests'
+    # Filename format. {date} is replaced with date (2026-04-25)
+    # Extension is added automatically based on file_format
+    # null — {date}
+    filename_format: '{date}'
+    # File format. Available: md, html
+    # md — markdown file (table-based layout)
+    # html — styled HTML page (dark theme, editorial design)
+    # null — md
+    file_format: html
 
 # === NEWS ITEM FORMAT ===
 
 item_format:
-  # Show importance level (🔴 High / 🟡 Medium / 🟢 Low)
-  # true / false. null — true
-  show_importance: true
-  # Show source name (TechCrunch, CoinDesk, etc.)
-  # true / false. null — true
-  show_source: true
-  # Show link to original article
-  # true / false. null — true
-  show_link: true
-  # Description length for each news item
-  # short — 1-2 sentences
-  # medium — paragraph
-  # detailed — extended analysis
-  # null — short
-  description_length: short
+    # Show importance level (🔴 High / 🟡 Medium / 🟢 Low)
+    # true / false. null — true
+    show_importance: true
+    # Show source name (TechCrunch, CoinDesk, etc.)
+    # true / false. null — true
+    show_source: true
+    # Show link to original article
+    # true / false. null — true
+    show_link: true
+    # Description length for each news item
+    # short — 1-2 sentences
+    # medium — paragraph
+    # detailed — extended analysis
+    # null — short
+    description_length: detailed
 
 # === TOPICS ===
 # Each topic is a separate section in the digest
@@ -70,15 +75,19 @@ item_format:
 
 topics:
     # Topic name. Agent uses it to understand the subject area and generate search queries
-  - name: "AI / LLM"
-    # Max news items for this topic. null — use max_items_per_topic
-    max_items: null
-    # Websites for this topic. Agent will auto-discover their RSS feeds
-    # null — agent will find sources based on topic name
-    websites:
-      - https://techcrunch.com
-      - https://openai.com/blog
+    - name: 'AI / LLM'
+      # Max news items for this topic. null — use max_items_per_topic
+      max_items: null
+      # Websites for this topic. Agent will auto-discover their RSS feeds
+      # null — agent will find sources based on topic name
+      websites:
+          - https://techcrunch.com
+          - https://openai.com/blog
 
-  - name: "Crypto"
-    max_items: null
-    websites: null
+    - name: 'Crypto'
+      max_items: null
+      websites: null
+
+    - name: 'Development, Programming'
+      max_items: null
+      websites: null
