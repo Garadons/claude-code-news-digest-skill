@@ -152,6 +152,6 @@ Based on `output` config:
 - **`file`** — Create the output directory if it doesn't exist. Write the digest as a markdown file:
   - Directory: `file_output.directory` (expand `~` to home directory)
   - Filename: `file_output.filename_format` with `{date}` replaced by today's date (YYYY-MM-DD)
-  - If the file already exists, overwrite it (re-running the digest for the same day updates it).
+  - If a file with that name already exists, do NOT overwrite it. Instead, append a counter: `{date}-2.md`, `{date}-3.md`, etc. Check what files already exist before writing.
 
 Report what was done: how many topics processed, how many total items, where the file was saved (if applicable).
