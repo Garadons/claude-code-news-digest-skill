@@ -1,0 +1,6 @@
+# Output files
+news-digests/
+
+# OS files
+.DS_Store
+Thumbs.db
