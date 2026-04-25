@@ -121,13 +121,28 @@ For each topic:
    - Replace `{language}` with config value
    - Replace `{topic_count}` with number of topics
 3. For each topic, create a `## {topic_name}` section.
-4. For each news item in the topic, create a `### {article_title}` block:
+4. For each news item in the topic, create a compact block in this exact format:
+
+```
+{importance_emoji} **[{article_title}]({url})**
+_{source_name}_
+{description}
+```
+
+   - The importance emoji goes at the start of the first line, inline with the bold linked title
+   - Source name is on its own line in italics
+   - Description follows on the next line — plain text, no bold/italic
+   - One blank line between items for visual separation
    - Include/exclude fields based on `item_format` config (`show_importance`, `show_source`, `show_link`)
+   - If `show_link` is false, use `**{article_title}**` without the link
+   - If `show_importance` is false, omit the emoji prefix
+   - If `show_source` is false, omit the source line entirely
    - Description length follows `description_length` setting:
      - `short` — 1-2 sentences
      - `medium` — a paragraph (3-5 sentences)
      - `detailed` — extended analysis (2-3 paragraphs)
 5. Write the entire digest in the language specified by `language` config.
+6. Do NOT use `###` headers for individual news items — keep them as inline bold text. This makes the digest much more scannable.
 
 ## Step 5 — Deliver
 

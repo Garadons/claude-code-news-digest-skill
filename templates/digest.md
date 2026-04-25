@@ -1,16 +1,14 @@
 # {digest_title} — {date}
 
-> Collected: {timestamp} | Language: {language} | Topics: {topic_count}
+> {timestamp} | {language} | {topic_count} topics
 
 ---
 
 ## {topic_name}
 
-### {article_title}
-- **Importance:** {importance_emoji} {importance_level}
-- **Source:** {source_name}
-- **Description:** {description}
-- **Link:** [{url_domain}]({url})
+{importance_emoji} **[{article_title}]({url})**
+_{source_name}_
+{description}
 
 ---
 
