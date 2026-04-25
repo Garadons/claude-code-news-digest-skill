@@ -75,19 +75,37 @@ item_format:
 
 topics:
     # Topic name. Agent uses it to understand the subject area and generate search queries
-    - name: 'AI / LLM'
-      # Max news items for this topic. null — use max_items_per_topic
-      max_items: null
-      # Websites for this topic. Agent will auto-discover their RSS feeds
-      # null — agent will find sources based on topic name
-      websites:
-          - https://techcrunch.com
-          - https://openai.com/blog
+  - name: "Technology"
+    # Max news items for this topic. null — use max_items_per_topic
+    max_items: null
+    # Websites for this topic. Agent will auto-discover their RSS feeds
+    # null — agent will find sources based on topic name
+    websites: null
 
-    - name: 'Crypto'
-      max_items: null
-      websites: null
+  - name: "Business"
+    max_items: null
+    websites: null
 
-    - name: 'Development, Programming'
-      max_items: null
-      websites: null
+# ──────────────────────────────────────────────
+# EXAMPLE: Crypto-focused config
+# Uncomment the topics below and remove/comment the ones above
+# to get a crypto-oriented digest
+# ──────────────────────────────────────────────
+#
+#  - name: "Crypto Market"
+#    max_items: null
+#    websites:
+#      - https://cointelegraph.com
+#      - https://decrypt.co
+#      - https://crypto.news
+#      - https://bitcoinmagazine.com
+#
+#  - name: "DeFi & DEX"
+#    max_items: null
+#    websites:
+#      - https://cointelegraph.com
+#      - https://decrypt.co
+#
+#  - name: "Crypto Regulations"
+#    max_items: null
+#    websites: null
