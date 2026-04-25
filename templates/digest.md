@@ -1,15 +1,18 @@
-# {digest_title} — {date}
+# 📰 {digest_title} — {date}
 
-> {timestamp} | {language} | {topic_count} topics
-
----
-
-## {topic_name}
-
-{importance_emoji} **[{article_title}]({url})**
-_{source_name}_
-{description}
+<table>
+<tr><td>🕐 {timestamp}</td><td>🌐 {language}</td><td>📋 {topic_count} topics</td><td>📊 {total_items} items</td></tr>
+</table>
 
 ---
 
-> Generated with [news-digest](https://github.com/USER/news-digest)
+## {topic_icon} {topic_name}
+
+| | Story | Source |
+|:---:|-------|--------|
+| {importance_emoji} | **[{article_title}]({url})** | {source_name} |
+| | {description} | |
+
+---
+
+<sub>Generated with <a href="https://github.com/USER/news-digest">news-digest</a></sub>
