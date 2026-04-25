@@ -13,7 +13,7 @@ Collect recent news from multiple sources and generate a structured digest based
 2. Apply these defaults for any missing or `null` fields:
    - `language`: `en`
    - `digest_title`: `"News Digest"`
-   - `max_items_per_topic`: `5`
+   - `max_items_per_topic`: `5` (note: `null` in config means "use this default", NOT "no limit")
    - `collection.rss`: `true`
    - `collection.websites`: `true`
    - `collection.web_search`: `true`
@@ -126,31 +126,30 @@ Determine the output file format from `file_output.file_format` (`md` or `html`)
    - Replace `{digest_title}` with config value
    - Replace `{date}` with today's date (YYYY-MM-DD)
    - Replace `{timestamp}` with current time in format `HH:MM UTC` (e.g. `14:30 UTC`). Use `date -u +%H:%M` to get UTC time.
-   - Replace `{language}` with config value
+   - Replace `{language}` with config value (uppercase, e.g. `EN`, `UK`)
    - Replace `{topic_count}` with number of topics
-3. For each topic, create a `## {topic_name}` section.
-4. For each news item in the topic, create a compact block in this exact format:
+   - Replace `{total_items}` with total number of news items across all topics
+2. For each topic, create a `## {topic_icon} {topic_name}` section. Choose an appropriate emoji for each topic (e.g. 🤖 for AI, 💰 for Crypto, ⚙️ for Dev, 🌍 for World News).
+3. For each news item in the topic, create a table-based layout following the template:
 
-```
-{importance_emoji} **[{article_title}]({url})**
-_{source_name}_
-{description}
+```markdown
+| | Story | Source |
+|:---:|-------|--------|
+| {importance_emoji} | **[{article_title}]({url})** | {source_name} |
+| | {description} | |
 ```
 
-   - The importance emoji goes at the start of the first line, inline with the bold linked title
-   - Source name is on its own line in italics
-   - Description follows on the next line — plain text, no bold/italic
-   - One blank line between items for visual separation
-   - Include/exclude fields based on `item_format` config (`show_importance`, `show_source`, `show_link`)
-   - If `show_link` is false, use `**{article_title}**` without the link
-   - If `show_importance` is false, omit the emoji prefix
-   - If `show_source` is false, omit the source line entirely
+   - Each topic has its own table with header row
+   - Each news item is two rows: title row and description row
+   - Include/exclude columns based on `item_format` config:
+     - If `show_importance` is false, remove the first column (emoji)
+     - If `show_source` is false, remove the Source column
+     - If `show_link` is false, use `**{article_title}**` without the link
    - Description length follows `description_length` setting:
      - `short` — 1-2 sentences
      - `medium` — a paragraph (3-5 sentences)
      - `detailed` — extended analysis (2-3 paragraphs)
-5. Write the entire digest in the language specified by `language` config.
-6. Do NOT use `###` headers for individual news items — keep them as inline bold text. This makes the digest much more scannable.
+4. Write the entire digest in the language specified by `language` config.
 
 ### If format is `html` (HTML):
 
@@ -158,14 +157,21 @@ _{source_name}_
 2. The template has HTML comments with instructions on how to generate topic sections and news items.
 3. Replace header placeholders:
    - `{digest_title}` with config value
-   - `{date_human}` with human-readable date (e.g. `April 25, 2026`)
+   - `{date}` with today's date (YYYY-MM-DD) — used in `<title>` tag
+   - `{date_human}` with human-readable date (e.g. `April 25, 2026`) — used in `<h1>`
    - `{timestamp}` with current time in `HH:MM UTC` format
    - `{topic_count}` with number of topics
    - `{total_items}` with total number of news items across all topics
-4. For each topic, generate a `<section class="topic">` block following the template instructions.
-5. For each news item, generate an `<article class="item {level}">` block where `{level}` is `high`, `medium`, or `low`.
-6. Choose an appropriate emoji for each topic's icon (e.g. 🤖 for AI, 💰 for Crypto, ⚙️ for Dev).
-7. Write the entire digest in the language specified by `language` config.
+4. Replace `<html lang="en">` with `<html lang="{language}">` using the configured language code.
+5. For each topic, generate a `<section class="topic">` block following the template instructions.
+6. For each news item, generate an `<article class="item {level}">` block where `{level}` is `high`, `medium`, or `low`.
+   - Include/exclude elements based on `item_format` config:
+     - If `show_importance` is false, omit the `<div class="importance">` element
+     - If `show_source` is false, omit the `<div class="item-source">` element
+     - If `show_link` is false, use plain text instead of `<a>` tag in the title
+   - Description length follows `description_length` setting (same as MD format)
+7. Choose an appropriate emoji for each topic's icon (e.g. 🤖 for AI, 💰 for Crypto, ⚙️ for Dev).
+8. Write the entire digest in the language specified by `language` config.
 
 ## Step 5 — Deliver
 
