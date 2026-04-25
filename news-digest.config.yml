@@ -8,8 +8,8 @@ digest_title: 'Daily Digest'
 
 # Max number of news items per topic (default)
 # Each topic can override this value
-# null — no limit, show everything found
-max_items_per_topic: 10
+# null — defaults to 5
+max_items_per_topic: 5
 
 # === DATA COLLECTION ===
 
