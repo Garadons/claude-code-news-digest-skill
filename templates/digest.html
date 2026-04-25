@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{digest_title} — {date}</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=JetBrains+Mono:wght@300;400&family=Source+Sans+3:wght@300;400;600;700&display=swap');
+
+  :root {
+    --bg-deep: #0a0a0c;
+    --bg-card: #111114;
+    --bg-hover: #18181c;
+    --border-subtle: #1e1e24;
+    --border-accent: #2a2a32;
+    --text-primary: #e8e6e3;
+    --text-secondary: #b5b3b0;
+    --text-muted: #7a7880;
+    --accent-red: #ff3b30;
+    --accent-amber: #ffb830;
+    --accent-green: #30d158;
+    --accent-blue: #0a84ff;
+    --glow-red: rgba(255, 59, 48, 0.08);
+    --glow-amber: rgba(255, 184, 48, 0.06);
+    --glow-green: rgba(48, 209, 88, 0.06);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    font-family: 'Source Sans 3', -apple-system, sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .noise {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  .container { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+
+  header {
+    padding: 80px 0 48px;
+    border-bottom: 1px solid var(--border-subtle);
+    position: relative;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 200%;
+    height: 300px;
+    background: radial-gradient(ellipse at center top, rgba(10, 132, 255, 0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .header-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent-blue);
+    margin-bottom: 16px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(42px, 6vw, 64px);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    margin-bottom: 24px;
+  }
+
+  .meta-row {
+    display: flex;
+    gap: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 300;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+  }
+
+  .meta-row span::before {
+    content: '';
+    display: inline-block;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--border-accent);
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  .meta-row span:first-child::before { display: none; }
+
+  .topic {
+    padding: 56px 0 48px;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .topic:last-of-type { border-bottom: none; }
+
+  .topic-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  .topic-icon {
+    font-size: 20px;
+    width: 40px; height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+
+  .topic-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+  }
+
+  .item {
+    padding: 24px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    border: 1px solid var(--border-subtle);
+    background: var(--bg-card);
+    transition: all 0.25s ease;
+  }
+
+  .item:hover {
+    background: var(--bg-hover);
+    border-color: var(--border-accent);
+    transform: translateY(-1px);
+  }
+
+  .item.high { border-left: 3px solid var(--accent-red); }
+  .item.medium { border-left: 3px solid var(--accent-amber); }
+  .item.low { border-left: 3px solid var(--accent-green); }
+
+  .item.high:hover { box-shadow: inset 0 0 60px var(--glow-red); }
+  .item.medium:hover { box-shadow: inset 0 0 60px var(--glow-amber); }
+  .item.low:hover { box-shadow: inset 0 0 60px var(--glow-green); }
+
+  .item-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .importance {
+    flex-shrink: 0;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-top: 8px;
+  }
+
+  .importance.high { background: var(--accent-red); box-shadow: 0 0 8px var(--accent-red); }
+  .importance.medium { background: var(--accent-amber); box-shadow: 0 0 8px var(--accent-amber); }
+  .importance.low { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
+
+  .item-title {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.4;
+    flex: 1;
+  }
+
+  .item-title a {
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .item-title a:hover { color: var(--accent-blue); }
+
+  .item-source {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    padding-left: 20px;
+  }
+
+  .item-desc {
+    font-size: 17px;
+    line-height: 1.7;
+    font-weight: 400;
+    color: var(--text-secondary);
+    padding-left: 20px;
+  }
+
+  footer {
+    padding: 48px 0 80px;
+    text-align: center;
+  }
+
+  footer p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+
+  footer a {
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border-accent);
+    transition: all 0.2s;
+  }
+  footer a:hover { color: var(--accent-blue); border-color: var(--accent-blue); }
+
+  @media (max-width: 600px) {
+    header { padding: 48px 0 32px; }
+    .topic { padding: 40px 0 32px; }
+    .item { padding: 18px; }
+    .meta-row { flex-wrap: wrap; gap: 12px; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  header { animation: fadeUp 0.6s ease both; }
+  .topic:nth-of-type(1) { animation: fadeUp 0.6s ease 0.1s both; }
+  .topic:nth-of-type(2) { animation: fadeUp 0.6s ease 0.2s both; }
+  .topic:nth-of-type(3) { animation: fadeUp 0.6s ease 0.3s both; }
+  .topic:nth-of-type(4) { animation: fadeUp 0.6s ease 0.4s both; }
+  .topic:nth-of-type(5) { animation: fadeUp 0.6s ease 0.5s both; }
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="container">
+
+  <header>
+    <div class="header-label">{digest_title}</div>
+    <h1>{date_human}</h1>
+    <div class="meta-row">
+      <span>{timestamp}</span>
+      <span>{topic_count} topics</span>
+      <span>{total_items} items</span>
+    </div>
+  </header>
+
+  <!--
+    TEMPLATE INSTRUCTIONS FOR CLAUDE:
+
+    For each topic, generate a <section class="topic"> block:
+
+    <section class="topic">
+      <div class="topic-header">
+        <div class="topic-icon">{topic_icon}</div>
+        <h2>{topic_name}</h2>
+        <span class="topic-count">{item_count} items</span>
+      </div>
+
+      For each news item, generate an <article class="item {level}"> block
+      where {level} is "high", "medium", or "low":
+
+      <article class="item {level}">
+        <div class="item-top">
+          <div class="importance {level}"></div>
+          <div class="item-title"><a href="{url}">{article_title}</a></div>
+        </div>
+        <div class="item-source">{source_name}</div>
+        <div class="item-desc">{description}</div>
+      </article>
+
+    </section>
+
+    Choose an appropriate emoji for each topic icon.
+    Use "high" for 🔴, "medium" for 🟡, "low" for 🟢.
+  -->
+
+  <!-- TOPIC SECTIONS GO HERE -->
+
+  <footer>
+    <p>Generated with <a href="https://github.com/USER/news-digest">news-digest</a></p>
+  </footer>
+
+</div>
+</body>
+</html>
