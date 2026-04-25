@@ -46,32 +46,42 @@ Process each topic from `topics` list. For each topic, run three collection stag
 
 3. **Run `WebSearch`** for each query.
 
-4. **Collect results** — save title, snippet, URL for each result.
+4. **Collect results** — for EVERY result, you MUST save:
+   - `title` — the article title
+   - `url` — the **full, specific article URL** (e.g. `https://techcrunch.com/2026/04/24/google-invests-in-anthropic/`). NEVER use a bare domain like `https://techcrunch.com/` or a section URL like `https://infoq.com/news/` as the article link. If a specific article URL is not available, use the URL from the search result as-is.
+   - `snippet` — description or summary from the search result
 
 5. **Identify new sources** — note domains that appear frequently in results. These will be used in step 2b for RSS discovery.
 
 ### 2b. RSS Feed Discovery & Parsing (if `collection.rss: true`)
 
-**Goal:** Get structured article data from RSS feeds.
+**Goal:** Get structured article data from RSS feeds. This step is MANDATORY when enabled — do NOT skip it.
 
 Discover and parse RSS feeds for **all relevant websites** — both user-configured in `websites` and domains discovered via web search in step 2a.
+
+**You MUST attempt RSS discovery for at least 3-5 websites per topic.** RSS feeds provide the most reliable, structured data with guaranteed specific article URLs.
 
 For each website:
 
 1. **Find its RSS feed** using one of these methods (try in order, stop at first success):
-   a. `WebSearch` for `"{domain}" RSS feed URL` — often the fastest way to find the feed
-   b. Try common RSS paths by appending to the domain: `/feed`, `/rss`, `/rss.xml`, `/feed.xml`, `/atom.xml`
-   c. `WebFetch` the website's homepage HTML and look for `<link>` tags with `type="application/rss+xml"` or `type="application/atom+xml"`
+   a. `WebFetch` common RSS paths directly — try these URLs with `WebFetch`:
+      - `https://{domain}/feed`
+      - `https://{domain}/rss`
+      - `https://{domain}/rss.xml`
+      - `https://{domain}/feed.xml`
+      - `https://{domain}/atom.xml`
+   b. If none work, `WebSearch` for `"{domain}" RSS feed URL`
+   c. If still not found, `WebFetch` the website's homepage HTML and look for `<link>` tags with `type="application/rss+xml"` or `type="application/atom+xml"`
 
-2. **Fetch and parse the RSS feed** — `WebFetch` the discovered RSS URL. From the XML, extract for each item:
-   - `title` — article title
-   - `link` — article URL
+2. **Fetch and parse the RSS feed** — `WebFetch` the discovered RSS URL. From the XML, extract for each `<item>` or `<entry>`:
+   - `title` — from `<title>` tag
+   - `link` — from `<link>` tag — this is always a **specific article URL**, never a domain
    - `pubDate` or `updated` — publication date
    - `description` or `summary` — article description/snippet
 
 3. **Filter to recent items only** — keep only items from the last 24-48 hours.
 
-Do NOT spend too long on any single website. If RSS discovery fails after trying all three methods, skip that website and move on.
+Do NOT spend too long on any single website. If RSS discovery fails after trying all three methods, skip that website and move on. But you MUST try at least method (a) before giving up.
 
 ### 2c. Direct Website Scraping (if `collection.websites: true`)
 
@@ -80,8 +90,9 @@ Do NOT spend too long on any single website. If RSS discovery fails after trying
 For **all relevant websites** — both user-configured and discovered via web search in step 2a:
 
 1. `WebFetch` the main page or relevant news section.
-2. Extract headlines, dates, and links from the page content.
+2. Extract headlines, dates, and **specific article URLs** from the page content. Every link must be a full URL to the specific article (e.g. `https://example.com/2026/04/25/article-title`), NOT the domain or section page.
 3. This catches very recent news that may not yet appear in RSS feeds or search results.
+4. If `WebFetch` returns a 403/blocked response for a website, skip it and move on — do not retry.
 
 ## Step 3 — Process Results
 
@@ -98,6 +109,7 @@ For each topic:
    - 🟡 Medium — mentioned by 2 sources, or notable development
    - 🟢 Low — single source, or minor update
 5. **Trim** to `max_items` (use topic-level override if set, otherwise `max_items_per_topic`).
+6. **Validate links** — before including any item in the final output, verify it has a specific article URL. Discard items that only have a bare domain URL (e.g. `https://example.com` or `https://example.com/news/`). Prefer items from RSS feeds (step 2b) as they always have correct URLs.
 
 ## Step 4 — Format Output
 
@@ -105,7 +117,7 @@ For each topic:
 2. Build the digest following the template structure:
    - Replace `{digest_title}` with config value
    - Replace `{date}` with today's date (YYYY-MM-DD)
-   - Replace `{timestamp}` with current time (HH:MM UTC)
+   - Replace `{timestamp}` with current time in format `HH:MM UTC` (e.g. `14:30 UTC`). Use `date -u +%H:%M` to get UTC time.
    - Replace `{language}` with config value
    - Replace `{topic_count}` with number of topics
 3. For each topic, create a `## {topic_name}` section.
