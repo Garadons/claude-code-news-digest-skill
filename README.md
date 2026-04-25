@@ -6,7 +6,8 @@ A configurable Claude Code skill that collects news from multiple sources and ge
 
 - **Multi-source collection** — RSS feeds (auto-discovered), direct website scraping, web search
 - **Easy configuration** — just specify topics and optionally websites; everything else has sensible defaults
-- **Configurable output** — terminal, file, or both
+- **Configurable output** — terminal, file (Markdown or HTML), or both
+- **Two output formats** — clean Markdown tables or styled dark-theme HTML page
 - **No dependencies** — uses only built-in Claude Code tools (WebFetch, WebSearch)
 - **Works everywhere** — locally (manual/loop) and in the cloud (Scheduled Remote Agent)
 
@@ -45,6 +46,7 @@ See `news-digest.config.yml` for all available options including:
 - Report language
 - Collection methods (RSS, websites, web search)
 - Output targets (terminal, file)
+- File format (`md` or `html`)
 - News item format (importance, source, description length)
 
 ## Usage
@@ -71,13 +73,21 @@ Create a Scheduled Remote Agent trigger with this skill's repo as a source. The 
 
 ## Output
 
-The digest is formatted as a markdown document with news grouped by topic. Each item includes:
+Two file formats available:
+
+### Markdown (`file_format: md`)
+Table-based layout with emoji section headers. Works in any markdown viewer.
+
+### HTML (`file_format: html`)
+Styled dark-theme page with editorial design — Playfair Display headers, color-coded importance indicators, hover effects, entrance animations. Opens in any browser.
+
+Both formats include for each news item:
 - Importance level (🔴 High / 🟡 Medium / 🟢 Low)
 - Source name
-- Short description
+- Description
 - Link to original article
 
-Output files are saved to `~/news-digests/` by default (configurable).
+Output files are saved to `~/news-digests/` by default (configurable). Re-running on the same day creates a new file with a counter suffix (`-2`, `-3`, etc.) instead of overwriting.
 
 ## License
 
