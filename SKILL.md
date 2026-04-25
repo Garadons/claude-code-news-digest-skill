@@ -27,7 +27,11 @@ Collect recent news from multiple sources and generate a structured digest based
 
 ## Step 2 — Collect News
 
-Process each topic from `topics` list. For each topic, run three collection stages in order.
+Process each topic from `topics` list.
+
+**Parallelization:** If there are multiple topics, launch a separate subagent for each topic to collect news in parallel. Each subagent handles all three collection stages (2a, 2b, 2c) for its assigned topic independently. After all subagents complete, merge their results in Step 3.
+
+For each topic, run three collection stages in order.
 
 ### 2a. Web Search (if `collection.web_search: true`)
 
