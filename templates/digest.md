@@ -15,4 +15,4 @@
 
 ---
 
-<sub>Generated with <a href="https://github.com/USER/news-digest">news-digest</a></sub>
+<sub>Generated with <a href="https://github.com/Garadons/claude-code-news-digest-skill">news-digest</a></sub>

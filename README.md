@@ -16,7 +16,7 @@ A configurable Claude Code skill that collects news from multiple sources and ge
 Clone this repo into your Claude Code skills directory:
 
 ```bash
-git clone https://github.com/USER/news-digest.git ~/.claude/skills/news-digest
+git clone https://github.com/Garadons/claude-code-news-digest-skill.git ~/.claude/skills/news-digest
 ```
 
 Or add as a plugin source in Claude Code.
